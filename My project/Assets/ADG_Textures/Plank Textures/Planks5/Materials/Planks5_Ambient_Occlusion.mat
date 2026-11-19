@@ -28,7 +28,11 @@ Material:
     - _BaseMap:
         m_Texture: {fileID: 2800000, guid: fc95c7b35085e6e4eabef7b593e219d4, type: 3}
         m_Scale: {x: 1, y: 1}
+<<<<<<< HEAD
         m_Offset: {x: 0, y: 9.431037}
+=======
+        m_Offset: {x: 0, y: 153.07251}
+>>>>>>> efa32b86fc3e62c91de19941e5078070ab14e93e
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
