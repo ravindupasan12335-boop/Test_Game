@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Cube_Player_Movement : MonoBehaviour
@@ -8,6 +9,10 @@ public class Cube_Player_Movement : MonoBehaviour
     public float crouchMoveSpeed = 3f;
     public float jumpForce = 6f;
     public KeyCode crouchKey = KeyCode.C;
+
+    [Header("Crosshair Interaction (Press F)")]
+    public KeyCode interactKey = KeyCode.F;
+    public float interactRange = 12f;
 
     [Header("Safe Crouch Collider")]
     public float crouchColliderScaleY = 0.65f;
@@ -41,6 +46,8 @@ public class Cube_Player_Movement : MonoBehaviour
     private bool isSprinting = false;
     private float walkTimer = 0f;
     private Vector3 conveyorVelocity = Vector3.zero;
+
+    private readonly HashSet<int> collectedKeys = new HashSet<int>();
 
     private Vector3 standingColliderSize;
     private Vector3 standingColliderCenter;
@@ -79,7 +86,47 @@ public class Cube_Player_Movement : MonoBehaviour
             isGrounded = false;
         }
 
+        if (Input.GetKeyDown(interactKey))
+        {
+            HandleCrosshairInteract();
+        }
+
         UpdateCrouchCollider();
+    }
+
+    void HandleCrosshairInteract()
+    {
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        if (!Physics.Raycast(ray, out RaycastHit hit, interactRange, ~0, QueryTriggerInteraction.Collide))
+        {
+            return;
+        }
+
+        KeyPickup key = hit.collider.GetComponentInParent<KeyPickup>();
+        if (key != null && !key.IsCollected)
+        {
+            key.TryCollect(this);
+            return;
+        }
+
+        DoorLockSlot lockSlot = hit.collider.GetComponentInParent<DoorLockSlot>();
+        if (lockSlot != null && !lockSlot.IsUnlocked)
+        {
+            lockSlot.TryUnlockWithPlayer(this);
+        }
+    }
+
+    public void CollectKey(int keyId)
+    {
+        collectedKeys.Add(keyId);
+    }
+
+    public bool HasKey(int keyId)
+    {
+        return collectedKeys.Contains(keyId);
     }
 
     void UpdateCrouchCollider()
