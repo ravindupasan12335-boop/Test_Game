@@ -112194,8 +112194,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 200175948}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15, y: 2.5, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 5, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -112203,8 +112203,7 @@ Transform:
   - {fileID: 1173827282}
   - {fileID: 1218238743}
   - {fileID: 880670460}
-  - {fileID: 1519888970}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1519888970}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &200312481
 GameObject:
@@ -171923,7 +171922,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 17aa1f9def584d84db8a84804e2e48b3, type: 2}
+  - {fileID: 2100000, guid: ff776fe0c5cfa104bbb5b95818e2b231, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -213401,7 +213400,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
   keyId: 2
-  spinAndBob: 1
+  spinAndBob: 0
   spinSpeed: 70
   bobHeight: 0.15
   bobSpeed: 2.5
@@ -402455,7 +402454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
   keyId: 3
-  spinAndBob: 1
+  spinAndBob: 0
   spinSpeed: 70
   bobHeight: 0.15
   bobSpeed: 2.5
@@ -480196,6 +480195,7 @@ GameObject:
   - component: {fileID: 880670459}
   - component: {fileID: 880670458}
   - component: {fileID: 880670457}
+  - component: {fileID: 880670461}
   m_Layer: 0
   m_Name: Lock_4
   m_TagString: Untagged
@@ -480296,6 +480296,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 200175952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &880670461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880670456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e3528b60aea8d49b421f98c1bf7ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorLockSlot
+  requiredKeyId: 4
+  hideOnUnlock: 1
+  unlockedMaterial: {fileID: 0}
 --- !u!1 &880843353
 GameObject:
   m_ObjectHideFlags: 0
@@ -532442,7 +532457,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 17aa1f9def584d84db8a84804e2e48b3, type: 2}
+  - {fileID: 2100000, guid: ff776fe0c5cfa104bbb5b95818e2b231, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -623295,7 +623310,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 17aa1f9def584d84db8a84804e2e48b3, type: 2}
+  - {fileID: 2100000, guid: ff776fe0c5cfa104bbb5b95818e2b231, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -632971,6 +632986,7 @@ GameObject:
   - component: {fileID: 1173827281}
   - component: {fileID: 1173827280}
   - component: {fileID: 1173827279}
+  - component: {fileID: 1173827283}
   m_Layer: 0
   m_Name: Lock_2
   m_TagString: Untagged
@@ -633071,6 +633087,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 200175952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1173827283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173827278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e3528b60aea8d49b421f98c1bf7ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorLockSlot
+  requiredKeyId: 2
+  hideOnUnlock: 1
+  unlockedMaterial: {fileID: 0}
 --- !u!1 &1174154962
 GameObject:
   m_ObjectHideFlags: 0
@@ -657163,6 +657194,7 @@ GameObject:
   - component: {fileID: 1218238742}
   - component: {fileID: 1218238741}
   - component: {fileID: 1218238740}
+  - component: {fileID: 1218238744}
   m_Layer: 0
   m_Name: Lock_3
   m_TagString: Untagged
@@ -657263,6 +657295,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 200175952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1218238744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218238739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e3528b60aea8d49b421f98c1bf7ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorLockSlot
+  requiredKeyId: 3
+  hideOnUnlock: 1
+  unlockedMaterial: {fileID: 0}
 --- !u!1 &1218326002
 GameObject:
   m_ObjectHideFlags: 0
@@ -667440,7 +667487,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 17aa1f9def584d84db8a84804e2e48b3, type: 2}
+  - {fileID: 2100000, guid: ff776fe0c5cfa104bbb5b95818e2b231, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -720194,7 +720241,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 17aa1f9def584d84db8a84804e2e48b3, type: 2}
+  - {fileID: 2100000, guid: ff776fe0c5cfa104bbb5b95818e2b231, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -752845,6 +752892,7 @@ GameObject:
   - component: {fileID: 1407174624}
   - component: {fileID: 1407174623}
   - component: {fileID: 1407174622}
+  - component: {fileID: 1407174625}
   m_Layer: 0
   m_Name: Lock_1
   m_TagString: Untagged
@@ -752945,6 +752993,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1407174620}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1407174625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407174620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89e3528b60aea8d49b421f98c1bf7ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DoorLockSlot
+  requiredKeyId: 1
+  hideOnUnlock: 1
+  unlockedMaterial: {fileID: 0}
 --- !u!1 &1407702725
 GameObject:
   m_ObjectHideFlags: 0
@@ -814922,6 +814985,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1519888970}
+  - component: {fileID: 1519888971}
   m_Layer: 0
   m_Name: Door_Pivot
   m_TagString: Untagged
@@ -814938,12 +815002,33 @@ Transform:
   m_GameObject: {fileID: 1519888969}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.5}
-  m_LocalScale: {x: 1, y: 0.2, z: 0.16666667}
+  m_LocalPosition: {x: 15, y: 2.5, z: -3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 200175952}
+  m_Children:
+  - {fileID: 200175952}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1519888971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1519888969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10adb3b024314e143a43be207259b847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MedievalDoorController
+  locks:
+  - {fileID: 1407174625}
+  - {fileID: 1173827283}
+  - {fileID: 1218238744}
+  - {fileID: 880670461}
+  openRotationOffset: {x: 0, y: 90, z: 0}
+  openPositionOffset: {x: 0, y: 0, z: 0}
+  openSpeed: 1
 --- !u!1 &1519977562
 GameObject:
   m_ObjectHideFlags: 0
@@ -858795,7 +858880,7 @@ Transform:
   m_GameObject: {fileID: 1599054556}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -858818,7 +858903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
   keyId: 1
-  spinAndBob: 1
+  spinAndBob: 0
   spinSpeed: 70
   bobHeight: 0.15
   bobSpeed: 2.5
@@ -1120225,7 +1120310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
   keyId: 4
-  spinAndBob: 1
+  spinAndBob: 0
   spinSpeed: 70
   bobHeight: 0.15
   bobSpeed: 2.5
@@ -1144987,7 +1145072,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 17aa1f9def584d84db8a84804e2e48b3, type: 2}
+  - {fileID: 2100000, guid: ff776fe0c5cfa104bbb5b95818e2b231, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1155670,6 +1155755,6 @@ SceneRoots:
   - {fileID: 471170487}
   - {fileID: 135421577}
   - {fileID: 1072860983}
-  - {fileID: 200175952}
+  - {fileID: 1519888970}
   - {fileID: 668672622}
   - {fileID: 874636229}
