@@ -2,27 +2,40 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Adjust this speed in the Unity Inspector to make the player move faster or slower
     public float moveSpeed = 5f;
+    public float jumpForce = 6f;
 
     private Rigidbody rb;
+    private bool isGrounded = true;
 
     void Start()
     {
-        // Automatically find the Rigidbody component attached to this object
         rb = GetComponent<Rigidbody>();
+    }
+
+    void Update()
+    {
+        // Check for jump input in Update so taps aren't missed
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            // Impulse applies an instant burst of upward force
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
+        }
     }
 
     void FixedUpdate()
     {
-        // Get player input from W, A, S, D or Arrow Keys
-        float moveHorizontal = Input.GetAxis("Horizontal"); // A/D or Left/Right
-        float moveVertical = Input.GetAxis("Vertical");     // W/S or Up/Down
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
 
-        // Create a movement direction vector on the X and Z plane (leaving Y alone for gravity)
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-        // Apply force to the Rigidbody to move the sphere
         rb.AddForce(movement * moveSpeed);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        // Allow jumping again once the player touches a surface
+        isGrounded = true;
     }
 }
