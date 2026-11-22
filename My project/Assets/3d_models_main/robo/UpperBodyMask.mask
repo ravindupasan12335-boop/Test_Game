@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UpperBodyMask
+  m_Mask: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000u
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Bone.005
+    m_Weight: 0
+  - m_Path: Bone.005/Bone
+    m_Weight: 0
+  - m_Path: Bone.005/Bone/Bone_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone/Bone_end/Bone_end_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone/Circle.002
+    m_Weight: 1
+  - m_Path: Bone.005/Bone/Circle.003
+    m_Weight: 1
+  - m_Path: Bone.005/Bone/Cube.001
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.001
+    m_Weight: 0
+  - m_Path: Bone.005/Bone.001/Bone.001_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.001/Bone.001_end/Bone.001_end_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.001/Cube.004
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.002
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.002/Bone.002_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.002/Bone.002_end/Bone.002_end_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.002/Cube.005
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.003
+    m_Weight: 0
+  - m_Path: Bone.005/Bone.003/Bone.003_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.003/Bone.003_end/Bone.003_end_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.003/Cube.006
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.004
+    m_Weight: 0
+  - m_Path: Bone.005/Bone.004/Bone.004_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.004/Bone.004_end/Bone.004_end_end
+    m_Weight: 1
+  - m_Path: Bone.005/Bone.004/Cube.007
+    m_Weight: 1

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2688d6621a623b04db8b702d78f6c950
+guid: bd2c3bb5068e43847848822cd0b69fe3
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
@@ -33,8 +33,8 @@ ModelImporter:
     clipAnimations:
     - serializedVersion: 16
       name: crouch
-      takeName: Armature|Armature|Armature|ArmatureAction
-      internalID: 6065333994261340666
+      takeName: Armature|ArmatureAction
+      internalID: 4781951162920444690
       firstFrame: 0
       lastFrame: 40
       wrapMode: 0
@@ -62,8 +62,8 @@ ModelImporter:
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: crouch and walk
-      takeName: Armature|Armature|Armature|ArmatureAction
-      internalID: 7649625319074749762
+      takeName: Armature|ArmatureAction
+      internalID: -2674958278859614444
       firstFrame: 40
       lastFrame: 80
       wrapMode: 0
@@ -91,8 +91,8 @@ ModelImporter:
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: idle
-      takeName: Armature|Armature|Armature|ArmatureAction
-      internalID: 5625390475202290671
+      takeName: Armature|ArmatureAction
+      internalID: 4594303134292970328
       firstFrame: 120
       lastFrame: 160
       wrapMode: 0
@@ -120,10 +120,39 @@ ModelImporter:
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
       name: stand walk
-      takeName: Armature|Armature|Armature|ArmatureAction
-      internalID: 7844303457302866570
+      takeName: Armature|ArmatureAction
+      internalID: 3696890337287820257
       firstFrame: 210
       lastFrame: 249
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000u
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: crouching and idle
+      takeName: Armature|ArmatureAction
+      internalID: 5401091116426756364
+      firstFrame: 21
+      lastFrame: 38
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
