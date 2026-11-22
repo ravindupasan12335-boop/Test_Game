@@ -288,10 +288,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e9c887b5985b145873ba9b161cc4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ThirdPerson_Camera
-  target: {fileID: 1019599791}
-  pivotOffset: {x: 0, y: 1.5, z: 0}
-  distance: 5
-  heightOffset: 0.5
+  target: {fileID: 193040867}
+  pivotOffset: {x: 0, y: 0.7, z: 0}
+  distance: 3.66
+  heightOffset: -1.39
   faceYawOffset: 90
   mouseSensitivity: 2.5
   minPitch: -20
@@ -364,28 +364,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d2f246a55cf29944923fd653c2c5523, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cube_Player_Movement
-  moveSpeed: 6
+  moveSpeed: 2
   sprintSpeedMultiplier: 2
   crouchMoveSpeed: 3
   jumpForce: 6
   crouchKey: 99
+  altCrouchKey: 99
+  thirdPersonCamera: {fileID: 156544092}
   interactKey: 102
   interactRange: 12
   crouchColliderScaleY: 0.65
   crouchTransitionSpeed: 14
-  Arm_1: {fileID: 709580335}
-  Arm_2: {fileID: 1496438482}
-  Leg_1: {fileID: 713166796}
-  Leg_2: {fileID: 552864840}
-  swingSpeed: 10
-  swingAngle: 35
-  sprintSwingSpeed: 18
-  sprintSwingAngle: 60
-  crouchArmAngle: -20
-  leftLegCrouchZ: -80
-  rightLegCrouchZ: 80
-  maxWiperAngle: 180
-  wiperSpeed: 6
+  animator: {fileID: 193040868}
+  walkBoolParameter: isWalking
+  crouchBoolParameter: isCrouching
+  crouchWalkBoolParameter: isCrouchWalking
+  walkAnimSpeed: 2
+  sprintAnimSpeed: 3
+  crouchAnimSpeed: 0.7
+  crouchWalkAnimSpeed: 1.5
+  animSpeedSmooth: 10
+--- !u!4 &193040867 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
+  m_PrefabInstance: {fileID: 499910072}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &193040868
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193040861}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f6b9bb6f7b2b63149aae3e738c230fd8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &499910072
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -467,6 +492,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
       insertIndex: -1
       addedObject: {fileID: 193040866}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 193040868}
   m_SourcePrefab: {fileID: 100100000, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
 --- !u!1 &522484860
 GameObject:
@@ -721,31 +749,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!4 &552864840 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1955778341831967723, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
-  m_PrefabInstance: {fileID: 499910072}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &709580335 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -5604011135908544822, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
-  m_PrefabInstance: {fileID: 499910072}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &713166796 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8851184219885690286, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
-  m_PrefabInstance: {fileID: 499910072}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1019599791 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2006700112846963197, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
-  m_PrefabInstance: {fileID: 499910072}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1496438482 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5559343636488068225, guid: a94668f7098dcd14fbd73e25e5f73903, type: 3}
-  m_PrefabInstance: {fileID: 499910072}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1721214280
 GameObject:
   m_ObjectHideFlags: 0
