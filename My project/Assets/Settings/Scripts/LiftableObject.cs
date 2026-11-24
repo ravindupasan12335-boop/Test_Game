@@ -35,6 +35,7 @@ public class LiftableObject : MonoBehaviour, IInteractable
 
     private Collider[] itemColliders;
     private readonly List<Collider> ignoredPlayerColliders = new List<Collider>();
+    private readonly Dictionary<Transform, Quaternion> playerInitialTilts = new Dictionary<Transform, Quaternion>();
 
     public bool IsHeld => isHeld;
     public bool IsBeingPushed => isBeingPushed;
@@ -138,6 +139,16 @@ public class LiftableObject : MonoBehaviour, IInteractable
         rb.angularVelocity = Vector3.zero;
         rb.constraints = originalConstraints | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
+        if (playerObj != null)
+        {
+            Transform pTr = playerObj.transform;
+            if (!playerInitialTilts.ContainsKey(pTr))
+            {
+                float startY = pTr.eulerAngles.y;
+                playerInitialTilts[pTr] = Quaternion.Inverse(Quaternion.Euler(0f, startY, 0f)) * pTr.rotation;
+            }
+        }
+
         SetPlayerCollisionIgnore(playerObj, true);
     }
 
@@ -200,21 +211,28 @@ public class LiftableObject : MonoBehaviour, IInteractable
             }
         }
 
-        // Maintain push/pull gap when not blocked by a wall
-        Vector3 desiredPlayerPos = rb.position + boxToPlayerFlat * Mathf.Max(0.8f, holdGap);
+        // Maintain push/pull gap when not blocked by a wall (allows closer spacing than before)
+        Vector3 desiredPlayerPos = rb.position + boxToPlayerFlat * Mathf.Max(0.4f, holdGap);
         desiredPlayerPos.y = playerTransform.position.y;
         if (!IsOrbitBlocked(playerTransform, desiredPlayerPos))
         {
             playerTransform.position = desiredPlayerPos;
         }
 
-        // Keep player oriented consistently toward the box so they never look away while orbiting
+        // Keep player facing the box while preserving their starting upright tilt
         Vector3 toBoxFlat = rb.position - playerTransform.position;
         toBoxFlat.y = 0f;
         if (toBoxFlat.sqrMagnitude > 0.0001f)
         {
             float lookYaw = Quaternion.LookRotation(toBoxFlat.normalized, Vector3.up).eulerAngles.y;
-            playerTransform.rotation = Quaternion.Euler(0f, lookYaw + faceYawOffset, 0f);
+            Quaternion initialTilt = Quaternion.identity;
+            if (!playerInitialTilts.TryGetValue(playerTransform, out initialTilt))
+            {
+                float curY = playerTransform.eulerAngles.y;
+                initialTilt = Quaternion.Inverse(Quaternion.Euler(0f, curY, 0f)) * playerTransform.rotation;
+                playerInitialTilts[playerTransform] = initialTilt;
+            }
+            playerTransform.rotation = Quaternion.Euler(0f, lookYaw + faceYawOffset, 0f) * initialTilt;
         }
     }
 

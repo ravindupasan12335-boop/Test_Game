@@ -11,7 +11,10 @@ public class FloorGridBuilder : MonoBehaviour
     public float tileDepth = 4f;     // Z size of each flattened cube
     public float tileThickness = 0.5f; // Y thickness
 
-    [Header("Optional Material")]
+    [Header("Colliders & Material")]
+    [Tooltip("Keep checked to give every spawned floor tile its own BoxCollider. Uncheck when using a single combined floor collider.")]
+    public bool Boxcollider = true;
+
     public Material floorMaterial;   // Drag your grass material here if you want
 
     [ContextMenu("Generate Floor Grid")]
@@ -42,6 +45,15 @@ public class FloorGridBuilder : MonoBehaviour
                 // Place top surface flush with y = 0 of this parent object
                 tile.transform.localPosition = new Vector3(posX, -tileThickness / 2f, posZ);
 
+                if (!Boxcollider)
+                {
+                    Collider col = tile.GetComponent<Collider>();
+                    if (col != null)
+                    {
+                        DestroyImmediate(col);
+                    }
+                }
+
                 if (floorMaterial != null)
                 {
                     tile.GetComponent<Renderer>().sharedMaterial = floorMaterial;
@@ -49,6 +61,6 @@ public class FloorGridBuilder : MonoBehaviour
             }
         }
 
-        Debug.Log($"Generated {columns * rows} floor tiles with exact edge-to-edge spacing.");
+        Debug.Log($"Generated {columns * rows} floor tiles (Boxcollider = {Boxcollider}).");
     }
 }
