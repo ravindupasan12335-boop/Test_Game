@@ -12,6 +12,10 @@ public class Cube_Player_Movement : MonoBehaviour
     public KeyCode crouchKey = KeyCode.LeftControl;
     public KeyCode altCrouchKey = KeyCode.C; // Backup key in case Ctrl+WASD hits a Unity Editor shortcut
 
+    [Header("Particle Effects")]
+    public ParticleSystem jumpParticles;
+    public ParticleSystem landParticles; // Optional: falls back to jumpParticles if left empty
+
     [Header("Camera Reference (Auto-Found if Empty)")]
     public ThirdPerson_Camera thirdPersonCamera;
 
@@ -37,10 +41,12 @@ public class Cube_Player_Movement : MonoBehaviour
     private Rigidbody rb;
     private BoxCollider boxCol;
     private bool isGrounded = true;
+    private bool wasGrounded = true;
     private bool isCrouching = false;
     private bool isSprinting = false;
     private bool isMovingInput = false;
     private bool jumpQueued = false;
+
 
     private bool hasWalkParameter = false;
     private bool hasCrouchParameter = false;
@@ -225,6 +231,13 @@ public class Cube_Player_Movement : MonoBehaviour
         groundColliders.RemoveWhere(c => c == null || !c.enabled);
         isGrounded = groundColliders.Count > 0 && (Time.time - lastJumpTime > 0.15f);
 
+        // Play landing particles on the frame the player touches down
+        if (!wasGrounded && isGrounded)
+        {
+            PlayLandParticles();
+        }
+        wasGrounded = isGrounded;
+
         // Read W, A, S, D directly every frame
         moveHorizontal = 0f;
         moveVertical = 0f;
@@ -259,6 +272,26 @@ public class Cube_Player_Movement : MonoBehaviour
 
         UpdateCrouchCollider();
         UpdateAnimator(isMovingInput, isSprinting && isMovingInput);
+    }
+
+    void PlayJumpParticles()
+    {
+        if (jumpParticles != null)
+        {
+            jumpParticles.Play();
+        }
+    }
+
+    void PlayLandParticles()
+    {
+        if (landParticles != null)
+        {
+            landParticles.Play();
+        }
+        else if (jumpParticles != null)
+        {
+            jumpParticles.Play();
+        }
     }
 
     void HandleCrosshairInteract()
@@ -365,11 +398,13 @@ public class Cube_Player_Movement : MonoBehaviour
             lastJumpTime = Time.time;
             groundColliders.Clear();
             isGrounded = false;
+            wasGrounded = false;
             isCrouching = false;
 
             rb.WakeUp();
             // Apply jump velocity directly so Rigidbody.mass never weakens jump height
             nextYVelocity = jumpForce;
+            PlayJumpParticles();
         }
         else if (isMoving)
         {
