@@ -10,14 +10,32 @@ public class RollerDoor_Open : MonoBehaviour
         Closing
     }
 
-    [Header("Lift Height")]
-    [Tooltip("If checked, uses the door's own Y size as the upward lift distance.")]
-    public bool useOwnYHeight = true;
-    [Tooltip("Used if Use Own Y Height is unchecked.")]
-    public float customOpenHeight = 3f;
+    public enum SlideDirection
+    {
+        Up,
+        Down,
+        Right,
+        Left,
+        Forward,
+        Back
+    }
+
+    [Header("Slide Direction & Distance")]
+    [Tooltip("Direction the door moves when opening (and reverses back along to close).")]
+    public SlideDirection slideDirection = SlideDirection.Up;
+
+    [Tooltip("If checked, uses the door's own size along the chosen slide axis as the open distance.")]
+    public bool useOwnAxisSize = true;
+
+    [Tooltip("Used if Use Own Axis Size is unchecked.")]
+    [Min(0f)]
+    public float customOpenDistance = 3f;
 
     [Header("Acceleration Motion (0 -> Max Speed)")]
+    [Min(0.01f)]
     public float maxSpeed = 5f;
+
+    [Min(0.01f)]
     public float acceleration = 4f;
 
     [Header("Collider Behavior")]
@@ -36,28 +54,66 @@ public class RollerDoor_Open : MonoBehaviour
         doorCollider = GetComponent<Collider>();
         closedLocalPos = transform.localPosition;
 
-        float liftHeight = useOwnYHeight
-            ? GetEffectiveYHeight()
-            : customOpenHeight;
+        Vector3 dirVector = GetDirectionVector(slideDirection);
+        float distance = useOwnAxisSize
+            ? GetEffectiveAxisSize(slideDirection)
+            : customOpenDistance;
 
-        openLocalPos = closedLocalPos + new Vector3(0f, liftHeight, 0f);
+        openLocalPos = closedLocalPos + dirVector * distance;
         CurrentState = DoorState.Closed;
     }
 
-    float GetEffectiveYHeight()
+    Vector3 GetDirectionVector(SlideDirection dir)
     {
+        switch (dir)
+        {
+            case SlideDirection.Up:      return Vector3.up;
+            case SlideDirection.Down:    return Vector3.down;
+            case SlideDirection.Right:   return Vector3.right;
+            case SlideDirection.Left:    return Vector3.left;
+            case SlideDirection.Forward: return Vector3.forward;
+            case SlideDirection.Back:    return Vector3.back;
+            default:                     return Vector3.up;
+        }
+    }
+
+    float GetEffectiveAxisSize(SlideDirection dir)
+    {
+        Vector3 boundsSize = Vector3.zero;
+        bool hasBounds = false;
+
         if (doorCollider != null)
         {
-            return doorCollider.bounds.size.y;
+            boundsSize = doorCollider.bounds.size;
+            hasBounds = true;
         }
-
-        Renderer rend = GetComponentInChildren<Renderer>();
-        if (rend != null)
+        else
         {
-            return rend.bounds.size.y;
+            Renderer rend = GetComponentInChildren<Renderer>();
+            if (rend != null)
+            {
+                boundsSize = rend.bounds.size;
+                hasBounds = true;
+            }
         }
 
-        return transform.localScale.y;
+        switch (dir)
+        {
+            case SlideDirection.Up:
+            case SlideDirection.Down:
+                return hasBounds ? boundsSize.y : transform.localScale.y;
+
+            case SlideDirection.Right:
+            case SlideDirection.Left:
+                return hasBounds ? boundsSize.x : transform.localScale.x;
+
+            case SlideDirection.Forward:
+            case SlideDirection.Back:
+                return hasBounds ? boundsSize.z : transform.localScale.z;
+
+            default:
+                return transform.localScale.y;
+        }
     }
 
     void Update()
@@ -124,12 +180,7 @@ public class RollerDoor_Open : MonoBehaviour
             doorCollider.enabled = true;
         }
 
-        // Reset speed cleanly when reversing direction from Closing
-        if (CurrentState == DoorState.Closing)
-        {
-            currentSpeed = 0f;
-        }
-        else if (CurrentState == DoorState.Closed)
+        if (CurrentState == DoorState.Closing || CurrentState == DoorState.Closed)
         {
             currentSpeed = 0f;
         }
@@ -141,17 +192,13 @@ public class RollerDoor_Open : MonoBehaviour
     {
         if (CurrentState == DoorState.Closed) return;
 
-        // Make sure collider is active again as the door slides back down
+        // Make sure collider is active again as the door slides back
         if (doorCollider != null)
         {
             doorCollider.enabled = true;
         }
 
-        if (CurrentState == DoorState.Opening)
-        {
-            currentSpeed = 0f;
-        }
-        else if (CurrentState == DoorState.Open)
+        if (CurrentState == DoorState.Opening || CurrentState == DoorState.Open)
         {
             currentSpeed = 0f;
         }

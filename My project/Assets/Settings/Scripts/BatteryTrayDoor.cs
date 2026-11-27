@@ -8,10 +8,20 @@ public class BatteryTrayDoorSystem : MonoBehaviour
     public class BatterySlot
     {
         public string slotName = "Slot";
-        [Tooltip("Exact position & rotation where a snapped battery sits on the flat tray.")]
+        [Tooltip("Exact position & rotation where a snapped battery sits on the flat tray (e.g., Pivot_1).")]
         public Transform snapPoint;
         [Tooltip("How close a released/nearby battery must be to snap into this slot.")]
         public float snapRadius = 1.25f;
+
+        [Header("Slot Ring Indicator (Lights Up White When Occupied)")]
+        [Tooltip("Ring mesh around this pivot (e.g., Pivot_1_ring) that lights up white when a battery is attached.")]
+        public Renderer slotIndicatorRing;
+        [Tooltip("Optional point/spot light near this pivot ring.")]
+        public Light slotIndicatorLight;
+        [Min(0f)]
+        public float ringEmissionIntensity = 2.5f;
+        [Min(0f)]
+        public float emptyRingEmissionIntensity = 0f;
 
         [HideInInspector] public Battery slottedBattery;
         [HideInInspector] public LiftableObject slottedLiftable;
@@ -20,21 +30,31 @@ public class BatteryTrayDoorSystem : MonoBehaviour
         [HideInInspector] public bool prevIsKinematic;
         [HideInInspector] public RigidbodyConstraints prevConstraints;
         [HideInInspector] public RigidbodyInterpolation prevInterpolation;
+        [HideInInspector] public bool lastRingLitState;
+        [HideInInspector] public bool ringVisualInitialized;
     }
 
     [Header("Tray Snap Slots (3 Required)")]
     public List<BatterySlot> slots = new List<BatterySlot>(3);
 
+    [Tooltip("Color applied to a slot's ring when a battery is attached.")]
+    public Color attachedRingColor = Color.white;
+
+    [Tooltip("Color applied to a slot's ring when no battery is attached.")]
+    public Color emptyRingColor = new Color(0.25f, 0.25f, 0.25f, 1f);
+
     [Tooltip("If true, batteries can be taken back out with Interact (F) when not locked.")]
     public bool allowRemovingBatteries = true;
 
     [Header("Door & Side Buttons")]
-    [Tooltip("Drag your door GameObject here (moves up/slides open when triggered after power is full).")]
+    [Tooltip("Drag your door GameObject here (moves up when triggered after power is full).")]
     public Transform doorTransform;
 
-    [Tooltip("Local or world offset the door moves when opened.")]
-    public Vector3 openPositionOffset = new Vector3(0f, 3.5f, 0f);
+    [Tooltip("How high (in meters along +Y) the door opens.")]
+    [Min(0f)]
+    public float openHeight = 3.5f;
 
+    [Min(0.01f)]
     public float doorMoveSpeed = 3.0f;
 
     [Tooltip("If true, pressing either side button toggles open/closed once powered; if false, it opens and stays open.")]
@@ -48,9 +68,14 @@ public class BatteryTrayDoorSystem : MonoBehaviour
 
     private bool isDoorPowered = false;
     private bool isDoorOpen = false;
+    private bool doorClosedPosCached = false;
     private Vector3 doorClosedPos;
-    private Vector3 doorOpenPos;
+    private MaterialPropertyBlock ringPropBlock;
     private readonly List<Battery> scannedBatteries = new List<Battery>();
+
+    private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+    private static readonly int ColorId = Shader.PropertyToID("_Color");
+    private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
 
     public bool IsDoorPowered => isDoorPowered;
     public bool IsDoorOpen => isDoorOpen;
@@ -84,6 +109,8 @@ public class BatteryTrayDoorSystem : MonoBehaviour
 
     void Awake()
     {
+        ringPropBlock = new MaterialPropertyBlock();
+
         if (slots.Count == 0)
         {
             for (int i = 0; i < 3; i++)
@@ -92,10 +119,33 @@ public class BatteryTrayDoorSystem : MonoBehaviour
             }
         }
 
+        CacheClosedDoorPosition(force: true);
+        RefreshAllSlotRings(force: true);
+    }
+
+    void OnValidate()
+    {
+        openHeight = Mathf.Max(0f, openHeight);
+        doorMoveSpeed = Mathf.Max(0.01f, doorMoveSpeed);
+
+        if (ringPropBlock == null)
+        {
+            ringPropBlock = new MaterialPropertyBlock();
+        }
+
+        if (!Application.isPlaying)
+        {
+            RefreshAllSlotRings(force: true);
+        }
+    }
+
+    public void CacheClosedDoorPosition(bool force = false)
+    {
+        if (doorClosedPosCached && !force) return;
         if (doorTransform != null)
         {
             doorClosedPos = doorTransform.position;
-            doorOpenPos = doorClosedPos + openPositionOffset;
+            doorClosedPosCached = true;
         }
     }
 
@@ -103,6 +153,7 @@ public class BatteryTrayDoorSystem : MonoBehaviour
     {
         CheckForReleasedBatteriesToSnap();
         KeepSlottedBatteriesSeated();
+        RefreshAllSlotRings(force: false);
         EvaluateDoorPowerState();
         AnimateDoor();
     }
@@ -186,6 +237,7 @@ public class BatteryTrayDoorSystem : MonoBehaviour
         }
 
         bat.transform.SetPositionAndRotation(slot.snapPoint.position, slot.snapPoint.rotation);
+        ApplySlotRingVisual(slot, isAttached: true);
     }
 
     public void ReleaseBatteryFromSlot(BatterySlot slot)
@@ -214,6 +266,8 @@ public class BatteryTrayDoorSystem : MonoBehaviour
         {
             bat.transform.position = slot.snapPoint.position + slot.snapPoint.forward * 0.35f;
         }
+
+        ApplySlotRingVisual(slot, isAttached: false);
     }
 
     private void KeepSlottedBatteriesSeated()
@@ -229,6 +283,7 @@ public class BatteryTrayDoorSystem : MonoBehaviour
                 slot.slottedBattery = null;
                 slot.slottedLiftable = null;
                 slot.slottedRb = null;
+                ApplySlotRingVisual(slot, isAttached: false);
                 continue;
             }
 
@@ -238,6 +293,71 @@ public class BatteryTrayDoorSystem : MonoBehaviour
                 slot.slottedRb.linearVelocity = Vector3.zero;
                 slot.slottedRb.angularVelocity = Vector3.zero;
             }
+        }
+    }
+
+    private void RefreshAllSlotRings(bool force)
+    {
+        if (slots == null) return;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            BatterySlot slot = slots[i];
+            if (slot == null) continue;
+
+            bool attached = slot.slottedBattery != null;
+            if (force || !slot.ringVisualInitialized || slot.lastRingLitState != attached)
+            {
+                ApplySlotRingVisual(slot, attached);
+            }
+        }
+    }
+
+    private void ApplySlotRingVisual(BatterySlot slot, bool isAttached)
+    {
+        if (slot == null) return;
+
+        slot.lastRingLitState = isAttached;
+        slot.ringVisualInitialized = true;
+
+        Color targetColor = isAttached ? attachedRingColor : emptyRingColor;
+        float targetEmission = isAttached ? slot.ringEmissionIntensity : slot.emptyRingEmissionIntensity;
+
+        if (slot.slotIndicatorRing != null)
+        {
+            if (ringPropBlock == null) ringPropBlock = new MaterialPropertyBlock();
+            slot.slotIndicatorRing.GetPropertyBlock(ringPropBlock);
+
+            Material mat = slot.slotIndicatorRing.sharedMaterial;
+            if (mat != null)
+            {
+                if (mat.HasProperty(BaseColorId))
+                {
+                    ringPropBlock.SetColor(BaseColorId, targetColor);
+                }
+                if (mat.HasProperty(ColorId))
+                {
+                    ringPropBlock.SetColor(ColorId, targetColor);
+                }
+                if (mat.HasProperty(EmissionColorId))
+                {
+                    ringPropBlock.SetColor(EmissionColorId, targetColor * targetEmission);
+                }
+            }
+            else
+            {
+                ringPropBlock.SetColor(BaseColorId, targetColor);
+                ringPropBlock.SetColor(ColorId, targetColor);
+                ringPropBlock.SetColor(EmissionColorId, targetColor * targetEmission);
+            }
+
+            slot.slotIndicatorRing.SetPropertyBlock(ringPropBlock);
+        }
+
+        if (slot.slotIndicatorLight != null)
+        {
+            slot.slotIndicatorLight.color = targetColor;
+            slot.slotIndicatorLight.intensity = isAttached ? slot.ringEmissionIntensity : 0f;
         }
     }
 
@@ -287,6 +407,12 @@ public class BatteryTrayDoorSystem : MonoBehaviour
     private void AnimateDoor()
     {
         if (doorTransform == null) return;
+        if (!doorClosedPosCached)
+        {
+            CacheClosedDoorPosition(force: true);
+        }
+
+        Vector3 doorOpenPos = doorClosedPos + Vector3.up * Mathf.Max(0f, openHeight);
         Vector3 targetPos = isDoorOpen ? doorOpenPos : doorClosedPos;
         doorTransform.position = Vector3.MoveTowards(doorTransform.position, targetPos, doorMoveSpeed * Time.deltaTime);
     }
